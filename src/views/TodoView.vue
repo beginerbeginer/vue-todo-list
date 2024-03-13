@@ -1,24 +1,40 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 const todos = ref([
-    { id: 1, title: 'プログラミングの学習', done: true },
-    { id: 2, title: '筋トレ', done: false },
-    { id: 3, title: '買い物', done: true },
+    {id: 1, title: 'プログラミングの学習', done: true},
+    {id: 2, title: '筋トレ', done: false},
+    {id: 3, title: '買い物', done: true},
 ]);
 
 const newTodo = ref('');
+const error = ref('');
 
 const addTodo = () => {
     console.log('addTodo', newTodo.value);
-    const todo = {
-        id: todos.value.length + 1,
-        title: newTodo.value,
-        done: false,
-    };
-    todos.value.push(todo);
-    newTodo.value = '';
+    if (validate()) {
+        const todo = {
+            id: todos.value.length + 1,
+            title: newTodo.value,
+            done: false,
+        };
+        todos.value.push(todo);
+        newTodo.value = '';
+    }
 };
+
+const validate = () => {
+    if (newTodo.value.trim() === '') {
+        error.value = 'タスクを入力してください';
+        return false
+    }
+
+    return true
+}
+
+const resetError = () => {
+    error.value = ''
+}
 </script>
 <template>
     <div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-16">
@@ -31,6 +47,7 @@ const addTodo = () => {
             <div class="flex items-center border-b-2 border-teal-500 py-2">
                 <input
                     v-model="newTodo"
+                    @input="resetError"
                     class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
                     type="text" placeholder="Add a task">
                 <button
@@ -40,6 +57,9 @@ const addTodo = () => {
                 </button>
             </div>
         </form>
+
+        <p class="text-red-500 text-xs italic text-left pl-5" v-if="error">{{ error }}</p>
+
         <ul class="divide-y divide-gray-200 px-4">
             <li class="py-4" v-for="todo in todos" :key="todo.id">
                 <div class="flex items-center">
