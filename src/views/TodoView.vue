@@ -23,6 +23,11 @@ const addTodo = () => {
     }
 };
 
+const deleteTodo = (id) => {
+    console.log('deleteTodo');
+    todos.value = todos.value.filter(todo => todo.id !== id);
+}
+
 const validate = () => {
     if (newTodo.value.trim() === '') {
         error.value = 'タスクを入力してください';
@@ -62,15 +67,18 @@ const resetError = () => {
 
         <ul class="divide-y divide-gray-200 px-4">
             <li class="py-4" v-for="todo in todos" :key="todo.id">
-                <div class="flex items-center">
-                    <input id="todo1" name="todo1" type="checkbox"
-                           :checked="todo.done"
-                           class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
-                    <label for="todo1"
-                           class="ml-3 block text-gray-900"
-                           :class="todo.done ? 'line-through': ''">
-                        <span class="text-lg font-medium">{{ todo.title }}</span>
-                    </label>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="todo1" name="todo1" type="checkbox"
+                               :checked="todo.done"
+                               class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                        <label for="todo1"
+                               class="ml-3 block text-gray-900"
+                               :class="todo.done ? 'line-through': ''">
+                            <span class="text-lg font-medium">{{ todo.title }}</span>
+                        </label>
+                    </div>
+                    <button @click="deleteTodo(todo.id)" class="bg-red-500 hover:bg-red-700 text-white font-bold">削除</button>
                 </div>
             </li>
         </ul>
