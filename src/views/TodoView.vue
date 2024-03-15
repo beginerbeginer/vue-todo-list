@@ -1,11 +1,7 @@
 <script lang="ts" setup>
 import {ref} from 'vue';
 
-const todos = ref([
-    {id: 1, title: 'プログラミングの学習', done: true},
-    {id: 2, title: '筋トレ', done: false},
-    {id: 3, title: '買い物', done: true},
-]);
+const todos = ref([]);
 
 const newTodo = ref('');
 const error = ref('');
@@ -26,6 +22,16 @@ const addTodo = () => {
 const deleteTodo = (id) => {
     console.log('deleteTodo');
     todos.value = todos.value.filter(todo => todo.id !== id);
+}
+
+const toggleTodo = (id) => {
+    console.log('toggleTodo', id);
+    todos.value = todos.value.map(todo => {
+        if (todo.id === id) {
+            todo.done = !todo.done;
+        }
+        return todo;
+    });
 }
 
 const validate = () => {
@@ -70,6 +76,7 @@ const resetError = () => {
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <input id="todo1" name="todo1" type="checkbox"
+                               @change="toggleTodo(todo.id)"
                                :checked="todo.done"
                                class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
                         <label for="todo1"
