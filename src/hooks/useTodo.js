@@ -1,9 +1,26 @@
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 
 const useTodo = () => {
   const todos = ref([]);
   const newTodo = ref('');
   const error = ref('');
+
+  const SESSION_STORAGE_KEY = 'todos';
+
+  onMounted(() => {
+    loadTodosFromSessionStorage()
+  })
+
+  const loadTodosFromSessionStorage = () => {
+    const todosData = sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (todosData) {
+      todos.value = JSON.parse(todosData);
+    }
+  }
+
+  const saveTodosToSessionStorage = () => {
+    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(todos.value));
+  }
 
   const addTodo = () => {
     console.log('addTodo', newTodo.value);
@@ -15,12 +32,14 @@ const useTodo = () => {
       };
       todos.value.push(todo);
       newTodo.value = '';
+      saveTodosToSessionStorage();
     }
   };
 
   const deleteTodo = (id) => {
     console.log('deleteTodo');
     todos.value = todos.value.filter(todo => todo.id !== id);
+    saveTodosToSessionStorage();
   }
 
   const toggleTodo = (id) => {
@@ -31,6 +50,7 @@ const useTodo = () => {
       }
       return todo;
     });
+    saveTodosToSessionStorage();
   }
 
   const validate = () => {
